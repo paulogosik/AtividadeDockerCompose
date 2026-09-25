@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Meus arquivos</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; background: #f5f7fa; color: #203047; font-family: Arial, sans-serif; line-height: 1.6; }
+        main { max-width: 800px; margin: 56px auto; padding: 0 24px; }
+        h1 { margin-bottom: 0; }
+        h2 { margin-top: 36px; }
+        .descricao { color: #546174; margin-top: 4px; }
+        form { padding: 24px; background: white; border: 1px solid #d6dde7; border-radius: 8px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; }
+        input { max-width: 100%; }
+        button { display: block; margin-top: 20px; padding: 10px 20px; background: #2055a4; color: white; border: 0; border-radius: 4px; cursor: pointer; font: inherit; }
+        button:hover { background: #163c76; }
+        a { color: #2055a4; }
+        .limite { font-size: 14px; color: #546174; }
+        .errorlist { color: #aa2020; }
+        .lista { padding: 0; list-style: none; }
+        .lista li { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-bottom: 1px solid #d6dde7; }
+        .nome { overflow-wrap: anywhere; }
+        small { display: block; color: #546174; }
+        .lista a { flex-shrink: 0; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Meus arquivos</h1>
+        <p class="descricao">Envie um arquivo e baixe quando precisar.</p>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <p class="limite">Tamanho máximo: 10 MB por arquivo.</p>
+            <button type="submit">Enviar arquivo</button>
+        </form>
+
+        <h2>Arquivos enviados</h2>
+        <ul class="lista">
+            {% for item in arquivos %}
+                <li>
+                    <div class="nome">
+                        <strong>{{ item.nome }}</strong>
+                        <small>Enviado em {{ item.enviado_em|date:"d/m/Y à\s H:i" }}</small>
+                    </div>
+                    <a href="{{ item.arquivo.url }}" download aria-label="Baixar {{ item.nome }}">Baixar</a>
+                </li>
+            {% empty %}
+                <li>Nenhum arquivo enviado ainda.</li>
+            {% endfor %}
+        </ul>
+    </main>
+</body>
+</html>
